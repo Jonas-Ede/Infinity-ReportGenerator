@@ -10,7 +10,7 @@ import numpy as np
 from openpyxl import *
 from tkinter import * 
 from tkinter import filedialog
-
+from tqdm import tqdm
 '''
 Notes: Hours are missing becasue time needs to actually be by the time catergories not by hours, if someone works job a then job b then back to job a job a must pay the overtime
 '''
@@ -82,10 +82,11 @@ fileType = (root.filename).lower().split('.')[-1]
 if fileType not in ("csv"):
     print("Error: Incorrect File Type")
     sys.exit()
-      
+
+#nothing = CSVhandle.csv_to_datArr(str(root.filename))      
 dataDFs = CSVhandle.csv_to_datArr2(str(root.filename))
 
-directory_path = r".\TEMPLATES"
+directory_path = r".\Infinity-ReportGenerator\TEMPLATES"
 folder = os.fsencode(directory_path)
 breakdown_filename = os.fsdecode(r".\GENERAL_WORK_BREAKDOWN_TEMPLATE_CLEAR.xlsx")
 filepath_breakdown = os.path.join(directory_path, breakdown_filename)
@@ -150,7 +151,7 @@ for date, df in dataDFs.items():
         
     #for each row, pull their row from the server, use the stored overtime and regular time horus to fill in the respective sheet
     #DB_ROW HEADERS[CLockSharkName, SECAIAlias, Position, Shift, Labor Category, Craft, RegularTimeLog, OverTimeLog]
-    for index, df_row in df.iterrows():
+    for index, df_row in tqdm(df.iterrows(), desc="Processing People Data..."):
         CSName = df_row['FullNameNC']
         db_row = CSVhandle.fetch_alias(conn, CSName)
         

@@ -2,6 +2,7 @@ import csv
 import pandas as pd
 import re
 import pyodbc
+import os
 
 def clean_job_label(job_label):
     first_word = re.split(r"[ ]+", job_label)[0]
@@ -99,7 +100,7 @@ def csv_to_datArr(filepath):
         for date, date_group in dataframe.groupby(dataframe['Start'].dt.date):
             day_dataframes[date] = date_group
         result[jobNum] = day_dataframes
-    '''   
+ 
     output_dir = 'output_csvs'
     os.makedirs(output_dir, exist_ok=True)
 
@@ -108,7 +109,7 @@ def csv_to_datArr(filepath):
             date_str = date.strftime('%Y-%m-%d')
             filename = f'{output_dir}/Job_{jobNum}_Date_{date_str}.csv'
             day_df.to_csv(filename, index=False)
-    '''
+            
     return result
 
 def print_datArr(result):
