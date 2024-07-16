@@ -195,7 +195,7 @@ def db_clear_times(conn):
     try:
         cursor.execute(reset_query)
         conn.commit()
-        print("Values have been reset to 0 successfully.")
+        #print("Values have been reset to 0 successfully.")
     except Exception as e:
         print(f"An error occurred: {e}")
         conn.rollback()

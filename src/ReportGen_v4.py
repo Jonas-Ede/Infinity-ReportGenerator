@@ -160,8 +160,8 @@ for date, df in dataDFs.items():
         else:
             #calculate worked hours and update hours in database    
             hourval = df_row['Regular (Mins)']/60
-            rt_worked = db_row[6]
-            ot_worked = db_row[7]
+            rt_worked = db_row[8]
+            ot_worked = db_row[9]
             remaining_rt_hours = 8 - rt_worked
             if hourval <= remaining_rt_hours:
                 rt_worked += hourval
@@ -225,8 +225,8 @@ for date, df in dataDFs.items():
                     iter = 7
                     while(active_sheet[f'A{iter}'].value != None):
                         if(active_sheet[f'A{iter}'].value == df_row["FullName"]):
-                            active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value = added_rt
-                            active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value = added_ot
+                            active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value = added_rt if active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value == None else added_rt + float(active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value)
+                            active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value = added_ot if active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value == None else added_ot + float(active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value)
                             break
                         else:
                             iter +=1 
@@ -234,10 +234,11 @@ for date, df in dataDFs.items():
                         active_sheet[f'A{iter}'].value = df_row["FullName"]
                         active_sheet[f'B{iter}'].value = db_row[5]
                         active_sheet[f'D{iter}'].value = db_row[2]
+                        active_sheet[f'E{iter}'].value = float(db_row[6])
+                        active_sheet[f'F{iter}'].value = float(db_row[7])
                         active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value = added_rt
                         active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value = added_ot
 
-        
     CSVhandle.db_clear_times(conn)
     template_wb.save(f"{str(date)}_REPORTS.xlsx")
 
