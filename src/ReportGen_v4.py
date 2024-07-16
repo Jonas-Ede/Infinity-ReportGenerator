@@ -122,7 +122,7 @@ for row_num, row in enumerate(daily_report.iter_rows(min_row=1, max_row=100, min
     elif row[0].value == "PM Supervisor":
         row_trackers["PM SUPERVISION"] = row_num
 
-print(row_trackers)
+#print(row_trackers)
 
 for date, df in dataDFs.items():
     CSVhandle.db_clear_times(conn)
@@ -238,6 +238,24 @@ for date, df in dataDFs.items():
                         active_sheet[f'F{iter}'].value = float(db_row[7])
                         active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+1)}{iter}'].value = added_rt
                         active_sheet[f'{excel_letter(task_columns.get(task_table.get(df_row['TaskCode']))+2)}{iter}'].value = added_ot
+                else:
+                    print(f'{CSName} does not have an asssigned task code, adding their hours to Special Tasks - Day Shift')
+                    iter = 7
+                    while(active_sheet[f'A{iter}'].value != None):
+                        if(active_sheet[f'A{iter}'].value == df_row["FullName"]):
+                            active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+1)}{iter}'].value = added_rt if active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+1)}{iter}'].value == None else added_rt + float(active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+1)}{iter}'].value)
+                            active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+2)}{iter}'].value = added_ot if active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+2)}{iter}'].value == None else added_ot + float(active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+2)}{iter}'].value)
+                            break
+                        else:
+                            iter +=1 
+                    if(active_sheet[f'A{iter}'].value == None):
+                        active_sheet[f'A{iter}'].value = df_row["FullName"]
+                        active_sheet[f'B{iter}'].value = db_row[5]
+                        active_sheet[f'D{iter}'].value = db_row[2]
+                        active_sheet[f'E{iter}'].value = float(db_row[6])
+                        active_sheet[f'F{iter}'].value = float(db_row[7])
+                        active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+1)}{iter}'].value = added_rt
+                        active_sheet[f'{excel_letter(task_columns.get(task_table.get('1021-05'))+2)}{iter}'].value = added_ot
 
     CSVhandle.db_clear_times(conn)
     template_wb.save(f"{str(date)}_REPORTS.xlsx")
